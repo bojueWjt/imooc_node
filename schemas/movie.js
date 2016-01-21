@@ -37,13 +37,13 @@ MovieSchema.pre("save",function(next){
 
 MovieSchema.statics = {
 
-	fetch:function(){
+	fetch:function(cd){
 
 		return this.find({})
 			.sort("updateAt")
 			.exec(cd);
 	},
-	findById:function(id){
+	findById:function(id,cd){
 
 		return this.findOne({
 			_id: id

@@ -1,54 +1,42 @@
+var Movie = require("../models/movie");
+var mongoose = require("mongoose");
+var _ = require("underscore");
+
+var db = mongoose.connect("mongodb://localhost/imooc_node");
+
+
+//处理主页路由 ／
 function index(req,res){
 
-	res.render("index",{
-		title:"一个node小程序",
-		movies:[{
-			_id:0,
-			title:"西游记之大圣归来",
-			poster:"img/poster.jpg"
-		},{
-			_id:0,
-			title:"西游记之大圣归来",
-			poster:"img/poster.jpg"
-		},{
-			_id:0,
-			title:"西游记之大圣归来",
-			poster:"img/poster.jpg"
-		},{
-			_id:0,
-			title:"西游记之大圣归来",
-			poster:"img/poster.jpg"
-		},{
-			_id:0,
-			title:"西游记之大圣归来",
-			poster:"img/poster.jpg"
-		},{
-			_id:0,
-			title:"西游记之大圣归来",
-			poster:"img/poster.jpg"
-		}]
-	});
+	Movie.fetch(function(err,moviesinfo){
 
+		if(err){
+
+			console.log(err);
+		}else{
+
+			res.render("index",{
+				title:"一个node小程序",
+				movies:moviesinfo
+			});
+		}
+		
+	});
 }
 
-
+//电影细节路由 ／movie/id
 function detail(req,res){
 
-	res.render("detail",{
-		title:"电影详情页面",
-		movie:{
-			title:"西游记之大圣归来",
-			doctor:"田晓鹏",
-			country:"中国大陆",
-			language:"汉语普通话／粤语",
-			year:"2015-07-10",
-			summary:"五百年前，由石猴变化而成的齐天大圣孙悟空（张磊 配音）大闹天宫，最终被如来佛祖镇在了五行山下。此去经年，长安城内突然遭到山妖洗劫，童男童女哭声连连，命悬一线。危机时刻，自幼被行脚僧法明（吴文伦 配音）抚养长大的江流儿（林子杰 配音）救下了一个小女孩，结果反遭山妖追杀。经过一番追逐，江流儿无意中解除了孙悟空的封印，齐天大圣自然好好地将山妖教训了一番。因为封印未解开，悟空不得不护送江流儿和小女孩回长安，一路上又遭遇了猪八戒（刘九容 配音）和白龙马.<br/>与此同时，妖王（童自荣 配音）绝不甘心失败，他躲在暗中，等待着给孙悟空一行致命一击的良机……",
-			flash:"http://static.hdslb.com/miniloader.swf?aid=2498218&page=1"
-		}
+	var id = req.params.id;
+
+	Movie.findById(id,function(err,movie){
+
+		res.render("detail",{movie:movie});
 	})
+
 }
 
-
+//后台录入页 ／admin/movie
 function admin(req,res){
 
 	res.render("admin",{
@@ -66,71 +54,127 @@ function admin(req,res){
 	});
 }
 
+
+//后台列表页 /admin/list
 function list(req,res){
 
-	res.render("list",{
-		title:"电影列表页面",
-		movies:[{
-			title:"西游记之大圣归来" ,
-			doctor:"田晓鹏",
-			country:"中国大陆",
-			language:"汉语普通话／粤语",
-			year:"2015-07-10",
-			meta:{
-				createAt: new Date()
+	Movie.fetch(function(err,movies){
+
+		res.render("list",{
+			title:"电影列表页面",
+			movies:movies
+		});
+
+	});
+	
+}
+
+//后台更新请求跳转到更新页面
+function toUpdate(req,res){
+
+	var id = req.params.id;
+
+	console.log(id);
+
+	if(id){
+
+		Movie.findById(id,function(err,movie){
+
+			if(err){
+
+				console.log(err);
 			}
-		},
-		{
-			title:"西游记之大圣归来" ,
-			doctor:"田晓鹏",
-			country:"中国大陆",
-			language:"汉语普通话／粤语",
-			year:"2015-07-10",
-			meta:{
-				createAt: new Date()
+
+			res.render("admin",{
+				title:"更新电影信息",
+				movie:movie
+			});
+		});
+	}
+};
+
+//新增电影信息post请求
+function addMovie(req,res){
+
+	var movieObj = req.body;
+	var _movie;
+
+	if(movieObj._id !== "undefined"){
+
+		console.log(typeof movieObj._id)
+		console.log(typeof movieObj._id !== "undefined")
+
+		console.log("Ninico")
+
+		Movie.findById(movieObj._id,function(err,movie){
+
+			if(err){
+
+				console.log(err)
+			}else{
+
+				_movie = _.extend(movie,movieObj);
+				_movie.save(function(err,movie){
+
+					if(err){
+
+						console.log(err);
+					}
+
+					res.redirect("/movie/" + movie._id);
+				})
 			}
-		},
-		{
-			title:"西游记之大圣归来" ,
-			doctor:"田晓鹏",
-			country:"中国大陆",
-			language:"汉语普通话／粤语",
-			year:"2015-07-10",
-			meta:{
-				createAt: new Date()
+		})
+
+	}else{
+
+		var movie = new Movie({
+			title:movieObj.title,
+			doctor:movieObj.doctor,
+			country:movieObj.country,
+			language:movieObj.language,
+			year:movieObj.year,
+			summary:movieObj.summary,
+			poster:movieObj.poster,
+			flash:movieObj.flash
+		});
+
+		movie.save(function(err,data){
+
+			if(err){
+
+				console.log(err);
+			}else{
+
+				res.redirect("/movie/" + data._id);
 			}
-		},
-		{
-			title:"西游记之大圣归来" ,
-			doctor:"田晓鹏",
-			country:"中国大陆",
-			language:"汉语普通话／粤语",
-			year:"2015-07-10",
-			meta:{
-				createAt: new Date()
+		});	
+	}
+
+};
+
+//删除movie操作
+function deleteMovie(req,res){
+
+	var id = req.query._id;
+	console.log(id);
+
+	if(id){
+
+		Movie.remove({_id:id},function(err,movie){
+
+			if(err){
+
+				console.log(err);
+			}else{
+
+				console.log(movie);
+
+				res.json({success:1})
 			}
-		},
-		{
-			title:"西游记之大圣归来" ,
-			doctor:"田晓鹏",
-			country:"中国大陆",
-			language:"汉语普通话／粤语",
-			year:"2015-07-10",
-			meta:{
-				createAt: new Date()
-			}
-		},
-		{
-			title:"西游记之大圣归来" ,
-			doctor:"田晓鹏",
-			country:"中国大陆",
-			language:"汉语普通话／粤语",
-			year:"2015-07-10",
-			meta:{
-				createAt: new Date()
-			}
-		}]
-	})
+		});
+	}
+
 }
 
 
@@ -141,3 +185,9 @@ exports.detail = detail
 exports.admin = admin;
 
 exports.list = list;
+
+exports.toUpdate = toUpdate;
+
+exports.addMovie = addMovie;
+
+exports.deleteMovie = deleteMovie;
