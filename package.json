@@ -25,7 +25,6 @@
     "grunt-nodemon": "^0.4.1"
   },
   "dependencies": {
-    "bcrypt": "^0.8.5",
     "grunt": "^0.4.5"
   }
 }
