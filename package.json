@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "bcrypt": "^0.8.5",
-    "grunt": "^0.4.5"
+    "body-parser": "^1.14.2",
+    "grunt": "^0.4.5",
+    "multer": "^1.1.0"
   }
 }

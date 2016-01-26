@@ -1,4 +1,5 @@
 var Movie = require("../models/movie");
+var User = require("../models/user");
 var mongoose = require("mongoose");
 var _ = require("underscore");
 
@@ -177,6 +178,44 @@ function deleteMovie(req,res){
 
 }
 
+function userSignup(req,res){
+
+	var _user = req.body.user;
+
+	User.find({username:_user.username},function(err,user){
+
+		if(err){
+
+			console.log(err);
+		}
+
+		console.log(user)
+
+		console.log(user.length )
+
+		if(user.length != 0){
+
+			res.redirect("/");
+		}else{
+
+			var user = new User(_user);
+
+			user.save(function(err,user){
+
+				console.log("ninicocococ")
+
+				if(err){
+
+					console.log(err);
+				}
+
+				console.log(user);
+
+			});
+		}
+	});
+};
+
 
 exports.index = index;
 
@@ -191,3 +230,5 @@ exports.toUpdate = toUpdate;
 exports.addMovie = addMovie;
 
 exports.deleteMovie = deleteMovie;
+
+exports.userSignup = userSignup;

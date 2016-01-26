@@ -32,6 +32,8 @@ UserSchema.pre("save",function(next){
 		this.meta.updateAt = Date.now();
 	}
 
+	var user = this;
+
 	bcrypt.genSalt(SALT_WORK_FACTOR,function(err,salt){
 
 		if(err) return next(err);
@@ -41,7 +43,9 @@ UserSchema.pre("save",function(next){
 			if(err) return next(err);
 
 			user.password = hash;
+			next()
 		});
+
 	});
 });
 
