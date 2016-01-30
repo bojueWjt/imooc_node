@@ -2,6 +2,20 @@ var User = require("../models/user");
 var app = require("../../app.js");
 
 
+function signin(req,res){
+
+	res.render("signin",{
+		title:"登陆页面"
+	});
+};
+
+function signup(req,res){
+
+	res.render("signup",{
+		title:"注册页面"
+	});
+};
+
 function userSignup(req,res){
 
 	var _user = req.body.user;
@@ -13,27 +27,19 @@ function userSignup(req,res){
 			console.log(err);
 		}
 
-		console.log(user)
-
-		console.log(user.length )
-
 		if(user.length != 0){
 
-			res.redirect("/");
+			res.redirect("/signup");
 		}else{
 
 			var user = new User(_user);
 
 			user.save(function(err,user){
 
-				console.log("ninicocococ")
-
 				if(err){
 
 					console.log(err);
 				}
-
-				console.log(user);
 
 			});
 		}
@@ -53,7 +59,7 @@ function userSignin(req,res){
 
 		if(!mUser){
 
-			res.redirect("/");
+			res.redirect("/signin");
 		}else{
 
 			mUser.compare(user.password,function(err,isMatch){
@@ -87,11 +93,38 @@ function logout(req,res){
 	res.redirect("/");
 }
 
+function signinRequired(req,res,next){
+
+	if(!req.session.user){
+		return res.redirect("/signin");
+	}
+
+	next();
+};
+
+function adminRequired(req,res,next){
+
+	var role = req.session.user.role;
+	if(role <= 10 || !role){
+
+		return res.redirect("/");
+	}
+
+	next();
+};
 
 
+
+exports.signin = signin;
+
+exports.signup = signup;
 
 exports.userSignup = userSignup;
 
 exports.userSignin = userSignin;
 
 exports.logout = logout;
+
+exports.signinRequired = signinRequired;
+
+exports.adminRequired = adminRequired;

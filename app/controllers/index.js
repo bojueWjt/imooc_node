@@ -5,11 +5,6 @@ var Movie = require("../models/movie");
 exports.index = function(req,res){
 
 
-	if(req.session.user){
-
-		app.publicMethod.setUser(req.session.user);
-	}
-
 
 	Movie.fetch(function(err,moviesinfo){
 

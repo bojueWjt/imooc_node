@@ -9,7 +9,7 @@ $(function(){
 
 		$.ajax({
 			method:"DELETE",
-			url:"list?_id=" + id
+			url:"delete?_id=" + id
 		}).done(function(results){
 
 			if(results.success){

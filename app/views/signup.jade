@@ -1,0 +1,14 @@
+extends ../views/layout
+block content
+	.container
+		h3 #{title}
+		.col-md-5
+			form(action="user/signup" method="POST")
+				.form-group
+					label(for="username") 用户名
+					input#username.form-control(type="text",name="user[username]")
+				.form-group
+					label(for="password") 密码
+					input#password.form-control(type="text",name="user[password]")
+				.form-group
+					button.btn.btn-success(type="submit") 提交
