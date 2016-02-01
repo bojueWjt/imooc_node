@@ -1,6 +1,7 @@
 var Index = require("../app/controllers/index");
 var Movie = require("../app/controllers/movie");
 var User = require("../app/controllers/user");
+var Comment = require("../app/controllers/comment");
 var _ = require("underscore");
 var app = require("../app.js");
 
@@ -32,6 +33,7 @@ exports.config = function(app){
 	app.post("/user/signup",User.userSignup);
 	app.post("/user/signin",User.userSignin);
 	app.get("/user/logout",User.logout);
+	app.post("/movie/user/comment",Comment.saveComment);
 }
 
 

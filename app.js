@@ -42,16 +42,7 @@ if("development" == app.get("env")){
 	mongoose.set("debug",true);
 }
 
-app.use(function(req,res,next){
 
-	console.log("ninico");
-	if(req.session.user){
-
-		app.locals.user = req.session.user;
-	}
-
-	next();
-});
 
 
 
